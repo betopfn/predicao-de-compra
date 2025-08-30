@@ -13,13 +13,25 @@ data_limpo = data.dropna().copy()
 data_limpo = data_limpo.drop_duplicates
 # Retira faturas canceladas
 data_limpo = data_limpo[data_limpo['InvoiceNo'].str.contains('C') == False].copy()
-# Calculo de Recencia
+# Preparação de dados
 # Encontrar a ultima data geral
 ultima_data = data_limpo['InvoiceDate'].max()
 # Criar data de referencia, que sera 1 dia depois da ultima data
 data_referencia = ultima_data + pd.DateOffset(days=1)
+# Calculo Recencia
 # Encontrar a ultima data de compra por pessoa
 ultima_compra_por_pessoa = data_limpo.groupby('CustomerID')['InvoiceDate'].max().reset_index()
-#Calculo de recencia(diferença entre a data de referencia e última compra)
+# Calculo de recencia(diferença entre a data de referencia e última compra)
 ultima_compra_por_pessoa['Recencia'] = (data_referencia - ultima_compra_por_pessoa['InvoiceDate']).dt.days
+# Calculo de Frquência
+frequencia_por_pessoa = data_limpo.groupby('CustomerID')['InvoiceNo'].nunique().reset_index()
+frequencia_por_pessoa.columns = ['CustomerID', 'Frequencia']
+# Calculo de monetário
+# Primeirpo: Coluna de total por transação
+data_limpo['Receita'] = data_limpo['Quantity'] * data_limpo['UnitPrice']
+# Segundo: Agrupamento de dados
+monetário_por_pessoa = data_limpo.groupby('CustomerID')['Receita'].sum().reset_index()
+# Criação do data frame para ensino do modelo de learning
+rf_data = pd.merge(ultima_compra_por_pessoa, frequencia_por_pessoa, on='CustomerID')
+rfm_completo = pd.merge(rf_data, monetário_por_pessoa, on='CustomerID')
 print(data.info())
