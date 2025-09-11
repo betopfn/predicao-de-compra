@@ -34,4 +34,16 @@ monetário_por_pessoa = data_limpo.groupby('CustomerID')['Receita'].sum().reset_
 # Criação do data frame para ensino do modelo de learning
 rf_data = pd.merge(ultima_compra_por_pessoa, frequencia_por_pessoa, on='CustomerID')
 rfm_completo = pd.merge(rf_data, monetário_por_pessoa, on='CustomerID')
+# Definição de data de corte
+data_de_corte = '2011-12-01'
+# Data do período de treinamento
+df_treinamento = data_limpo[data_limpo['InvoiceDate'] < data_de_corte].copy()
+# Data de previsão
+df_previsao = data_limpo[data_limpo['InvoiceDate'] >= data_de_corte].copy()
+# Correto: agrupar por CustomerID e contar faturas únicas
+clientes_que_compraram_futuro = df_previsao.groupby('CustomerID')['InvoiceNo'].nunique().reset_index()
+# Lista do DF dos clientes que compraram no futuro 
+lista_clientes_futuro = clientes_que_compraram_futuro['CustomerID'].tolist()
+# Coluna de verificação de compra
+
 print(data.info())
