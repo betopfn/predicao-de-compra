@@ -1,0 +1,102 @@
+# Previsão de Compra de Clientes com RFM e Machine Learning
+
+Este projeto tem como objetivo prever se um cliente realizará uma nova compra no futuro. Utilizando o dataset "Online Retail", realizamos uma análise **RFM (Recência, Frequência e Valor Monetário)** para extrair características do comportamento do cliente e, em seguida, treinamos um modelo de Machine Learning (`Random Forest`) para classificar os clientes como prováveis compradores ou não.
+
+O script principal (`correcao_dataset.py`) realiza todo o processo: desde a limpeza e pré-processamento dos dados até o treinamento do modelo e a geração de um relatório com as previsões.
+
+## 📂 Estrutura do Projeto
+
+/predicao-de-compra
+|
+|-- correcao_dataset.py # Script principal com todo o fluxo de trabalho
+|-- Online Retail.xlsx # Dataset original com os dados de transações
+|-- relatorio_previsoes.csv # Arquivo de saída gerado pelo script com as previsões
+
+## 🚀 Tecnologias Utilizadas
+
+- **Python 3.12**
+- **Pandas:** Para manipulação e análise dos dados.
+- **NumPy:** Para operações numéricas.
+- **Scikit-learn:** Para criação e avaliação do modelo de Machine Learning.
+- **Openpyxl:** Para leitura de arquivos `.xlsx`.
+
+## ⚙️ Como Executar o Projeto
+
+Para executar este projeto localmente, siga os passos abaixo:
+
+**1. Clone o repositório:**
+
+```bash
+git clone [https://github.com/betopfn/predicao-de-compra.git](https://github.com/betopfn/predicao-de-compra.git)
+cd predicao-de-compra
+2. Crie um ambiente virtual (recomendado):
+
+Bash
+
+python -m venv venv
+source venv/bin/activate  # No Windows: venv\Scripts\activate
+3. Instale as dependências:
+É uma boa prática ter um arquivo requirements.txt. Você pode criar um com o seguinte conteúdo:
+
+pandas
+numpy
+scikit-learn
+openpyxl
+E depois instalar com o comando:
+
+Bash
+
+pip install -r requirements.txt
+4. Execute o script principal:
+
+Bash
+
+python correcao_dataset.py
+5. Verifique os resultados:
+Após a execução, o terminal exibirá a acurácia do modelo e o relatório de classificação. Além disso, um novo arquivo chamado relatorio_previsoes.csv será criado na pasta do projeto, contendo as previsões detalhadas para o conjunto de teste.
+
+🛠️ Metodologia
+O processo de análise e modelagem foi dividido nas seguintes etapas:
+
+Pré-processamento e Limpeza:
+
+Carregamento do dataset Online Retail.xlsx.
+
+Remoção de linhas com CustomerID ou InvoiceNo nulos.
+
+Conversão de tipos de dados para otimização.
+
+Cálculo da Receita (Quantidade * Preço Unitário).
+
+Remoção de transações canceladas (que contêm 'C' no InvoiceNo).
+
+Exclusão de registros duplicados.
+
+Divisão Temporal dos Dados:
+
+O dataset foi dividido em dois períodos usando uma data de corte (2011-12-01).
+
+Dados de Treinamento: Todas as transações antes da data de corte.
+
+Dados de Previsão: Todas as transações a partir da data de corte (usados para definir a variável alvo).
+
+Cálculo das Métricas RFM:
+
+Utilizando apenas os dados de treinamento, foram calculadas as métricas de Recência, Frequência e Valor Monetário para cada cliente.
+
+Criação da Variável Alvo:
+
+A variável alvo (Fez_compra) foi criada identificando quais clientes do conjunto de treinamento voltaram a comprar no período de previsão. Se o cliente comprou, o valor é 1, caso contrário, 0.
+
+Treinamento e Avaliação do Modelo:
+
+As features (R, F, M) e a variável alvo foram divididas em conjuntos de treino e teste (80/20).
+
+Um modelo RandomForestClassifier foi treinado com os dados.
+
+O modelo foi avaliado usando a acurácia e o classification_report, que inclui precisão, recall e F1-score.
+
+Geração do Relatório Final:
+
+Um DataFrame com os resultados, contendo os valores reais e as previsões do modelo, foi salvo como relatorio_previsoes.csv.
+```
