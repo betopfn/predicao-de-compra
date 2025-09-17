@@ -3,7 +3,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
-
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 pd.set_option('display.max_columns', 500)
 data = pd.read_excel('Online Retail.xlsx')
 
@@ -70,4 +72,28 @@ resultados_df['Fez_compra_PREVISAO'] = previsoes
 print('\n--- Tabela de Resultados do Modelo ---')
 print(resultados_df.head())
 
-resultados_df.to_csv('relatorio_previsoes.csv', index=False)
+# 7. Criação de dashboards para análise visual
+# 7.1 Gráfico de barras
+nome_features = X.columns
+importancias = modelo.feature_importances_
+
+plt.figure(figsize=(12, 6))
+plt.bar(nome_features, importancias, color='skyblue')
+plt.title("Importância das Features no Modelo Random Forest")
+plt.xlabel("Features")
+plt.ylabel("Importância")
+
+matriz = confusion_matrix(Y_teste, previsoes)
+
+print("Matriz de Confusão(Texto):")
+print(matriz)
+
+plt.figure(figsize=(6, 4))
+sns.heatmap(matriz, annot=True, cmap="Blues", fmt="d",
+            xticklabels=['Não Comprou', 'Comprou'], 
+            yticklabels=['Não Comprou', 'Comprou'])
+plt.title("Matriz de Confusão")
+plt.xlabel("Verdadeiro(Real)")
+plt.ylabel("Previsão do Modelo")
+plt.show()
+plt.savefig('matriz_confusao.png')
